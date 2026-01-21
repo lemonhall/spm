@@ -6,6 +6,7 @@ Skill Package Management / Skill Package Manager.
 
 - Run tests: `npm test`
 - Run CLI: `node ./src/cli.js --help`
+- Backlog: `BACKLOG.md`
 
 ## MVP workflow (file registry)
 
