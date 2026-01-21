@@ -1,0 +1,16 @@
+{
+  "name": "spm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "spm": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node ./test/run.js",
+    "lint": "node -c ./src/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
