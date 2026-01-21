@@ -3,8 +3,25 @@ name: ${name}
 description: ${description}
 ---
 
-## Instructions
+## When to use
+
+- ...
+
+## Steps
+
+1. ...
+
+## Examples
+
+**Input**
+
+- ...
+
+**Output**
+
+- ...
+
+## Edge cases
 
 - ...
 `;
-

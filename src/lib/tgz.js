@@ -17,13 +17,13 @@ export async function createTgzFromDir({ dirPath, outFile, rootName }) {
 
   for (const d of dirs) {
     const name = ensureSlash(`${rootName}/${d.rel}`);
-    chunks.push(encodeHeader({ name, typeflag: "5", size: 0, mode: 0o755 }));
+    chunks.push(encodeHeader({ name, typeflag: "5", size: 0, mode: 0o755, mtime: 0 }));
   }
 
   for (const f of files) {
     const name = `${rootName}/${f.rel}`;
     const data = await fs.readFile(f.abs);
-    chunks.push(encodeHeader({ name, typeflag: "0", size: data.length, mode: 0o644 }));
+    chunks.push(encodeHeader({ name, typeflag: "0", size: data.length, mode: 0o644, mtime: 0 }));
     chunks.push(data);
     const pad = padToBlock(data.length);
     if (pad) chunks.push(Buffer.alloc(pad, 0));
@@ -97,4 +97,3 @@ function safeJoin(baseDir, entryName) {
   }
   return dest;
 }
-

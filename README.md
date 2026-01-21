@@ -23,3 +23,8 @@ Skill Package Management / Skill Package Manager.
 
 - `spm add @scope/dep-skill@latest --registry E:\skill-registry`
 - `spm install --registry E:\skill-registry`
+
+## Host integration
+
+- Host contract doc: `HOST_CONTRACT.md`
+- Optional flatten export (if host cannot resolve nested deps): `spm export --out <dir>`

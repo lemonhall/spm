@@ -13,3 +13,11 @@ test("semver: satisfies caret", () => {
 test("semver: maxSatisfying picks highest matching", () => {
   assert.equal(maxSatisfying(["1.0.0", "1.2.0", "1.2.9"], "^1.2.0"), "1.2.9");
 });
+
+test("semver: star matches anything", () => {
+  assert.equal(maxSatisfying(["1.0.0", "2.0.0"], "*"), "2.0.0");
+});
+
+test("semver: comparator ranges", () => {
+  assert.equal(maxSatisfying(["1.0.0", "1.2.0", "2.0.0"], ">=1.1.0 <2.0.0"), "1.2.0");
+});

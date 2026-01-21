@@ -1,5 +1,6 @@
 import { commandAdd } from "../commands/add.js";
 import { commandDoctor } from "../commands/doctor.js";
+import { commandExport } from "../commands/export.js";
 import { commandInit } from "../commands/init.js";
 import { commandInstall } from "../commands/install.js";
 import { commandList } from "../commands/list.js";
@@ -13,12 +14,17 @@ Usage:
   spm pack [--out <file.tgz>]
   spm publish --registry <path> [--tarball <file.tgz>]
   spm add <pkg[@range]> --registry <path>
-  spm install --registry <path>
-  spm list
+  spm install [--registry <path>] [--update]
+  spm list [--tree]
   spm doctor
+  spm export [--out <dir>]
+
+Env:
+  SPM_REGISTRY=<path>  default registry root
 `;
 
 export async function runCli(argv, ctx) {
+  ctx.env ??= process.env;
   const { command, args, flags } = parseArgs(argv);
   if (!command || flags.help) {
     ctx.stdout.write(HELP);
@@ -33,6 +39,7 @@ export async function runCli(argv, ctx) {
     install: commandInstall,
     list: commandList,
     doctor: commandDoctor,
+    export: commandExport,
   };
 
   const handler = commands[command];
@@ -84,4 +91,3 @@ function parseArgs(argv) {
 
   return { command, args, flags };
 }
-

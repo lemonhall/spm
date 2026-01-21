@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { ensureDir, writeJsonFile, readJsonFile } from "./fs.js";
 import { maxSatisfying } from "./semver.js";
+import { formatIntegritySha256, sha256File } from "./integrity.js";
 
 export class FileRegistry {
   constructor(rootDir) {
@@ -17,6 +18,7 @@ export class FileRegistry {
     const fileName = `${name}-${manifest.version}.tgz`;
     const destTarball = path.join(dashDir, fileName);
     await fs.copyFile(tarballPath, destTarball);
+    const integrity = formatIntegritySha256(await sha256File(destTarball));
 
     const indexPath = path.join(pkgDir, "index.json");
     const index = (await tryReadJson(indexPath)) ?? {
@@ -28,7 +30,7 @@ export class FileRegistry {
 
     index.skillName = manifest.skillName;
     index.versions[manifest.version] = {
-      dist: { tarball: `file:${destTarball}` },
+      dist: { tarball: `file:${destTarball}`, integrity },
     };
     index["dist-tags"].latest = manifest.version;
     await writeJsonFile(indexPath, index);
@@ -48,13 +50,20 @@ export class FileRegistry {
     if (!chosen) throw new Error(`No version satisfies ${packageId}@${range}`);
 
     const tarball = index.versions[chosen].dist.tarball;
+    const integrity = index.versions[chosen].dist.integrity;
     if (!tarball?.startsWith("file:")) throw new Error("Only file: tarballs supported in MVP");
     return {
       packageId,
       version: chosen,
       skillName: index.skillName,
       tarballPath: tarball.slice("file:".length),
+      integrity,
     };
+  }
+
+  async fetchTarball(resolved, { destFile }) {
+    // For file registry we already have a local file; return it.
+    return resolved.tarballPath;
   }
 }
 

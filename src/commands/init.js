@@ -1,11 +1,25 @@
 import path from "node:path";
 import { writeJsonFile } from "../lib/fs.js";
 import { SKILL_SKELETON } from "../lib/skillSkeleton.js";
+import { isValidSkillName } from "../lib/skillSpec.js";
 
 export async function commandInit(_args, flags, ctx) {
   const dirName = path.basename(ctx.cwd);
   const skillName = flags.skillName ?? dirName;
-  const pkgName = flags.name ?? skillName;
+  if (skillName !== dirName) {
+    throw new Error(`skillName must match directory name: ${dirName}`);
+  }
+  if (!isValidSkillName(skillName)) {
+    throw new Error(`Invalid skillName: ${skillName}`);
+  }
+
+  const scope = flags.scope;
+  const defaultPkgName = scope ? `@${scope}/${skillName}` : skillName;
+  const pkgName = flags.name ?? defaultPkgName;
+  if (!pkgName.endsWith(`/${skillName}`) && pkgName !== skillName) {
+    throw new Error(`Package name should end with /${skillName} (or equal ${skillName})`);
+  }
+
   const version = flags.version ?? "0.1.0";
   const description = flags.description ?? "Describe what this skill does and when to use it.";
 
@@ -36,4 +50,3 @@ async function writeTextIfMissing(filePath, content) {
     await fs.writeFile(filePath, content, "utf8");
   }
 }
-

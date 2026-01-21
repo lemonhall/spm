@@ -13,7 +13,7 @@ export function compareVersions(a, b) {
 }
 
 export function satisfies(version, range) {
-  if (!range || range === "latest") return true;
+  if (!range || range === "latest" || range === "*") return true;
   const v = parseVersion(version);
   const r = String(range).trim();
 
@@ -57,4 +57,3 @@ function inCaretRange(v, base) {
 function inTildeRange(v, base) {
   return v.major === base.major && v.minor === base.minor && compareVersions(v, base) >= 0;
 }
-
